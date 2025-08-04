@@ -2,7 +2,6 @@ package practice;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import model.Candidate;
 import model.Cat;
@@ -21,9 +20,8 @@ public class StreamPractice {
     public int findMinEvenNumber(List<String> numbers) {
         return numbers.stream()
                 .flatMap(s -> Arrays.stream(s.split(",")))
-                .map(Integer::parseInt)
+                .mapToInt(Integer::parseInt)
                 .filter(integer -> integer % 2 == 0)
-                .mapToInt(Integer::intValue)
                 .min()
                 .orElseThrow(() -> new RuntimeException("Can't get min value from list: "
                         + numbers));
@@ -39,7 +37,8 @@ public class StreamPractice {
                 .map(n -> n % 2 == 1 ? numbers.get(n) - 1 : numbers.get(n))
                 .filter(var -> var % 2 == 1)
                 .average()
-                .orElseThrow();
+                .getAsDouble();
+
     }
 
     /**
@@ -55,7 +54,7 @@ public class StreamPractice {
                 .filter(p -> p.getSex() == Person.Sex.MAN
                         && p.getAge() >= fromAge
                         && p.getAge() <= toAge)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -75,7 +74,7 @@ public class StreamPractice {
                         && ((p.getSex() == Person.Sex.MAN && p.getAge() <= maleToAge)
                         || (p.getSex() == Person.Sex.WOMAN && p.getAge() <= femaleToAge))
                 )
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -87,11 +86,9 @@ public class StreamPractice {
         return peopleList.stream()
                 .filter(person -> person.getSex() == Person.Sex.WOMAN
                         && person.getAge() >= femaleAge)
-                .map(Person::getCats)
-                .flatMap(List::stream)
+                .flatMap(person -> person.getCats().stream())
                 .map(Cat::getName)
-                .collect(Collectors.toList());
-
+                .toList();
     }
 
     /**
@@ -112,6 +109,6 @@ public class StreamPractice {
                 .filter(candidateValidator)
                 .map(Candidate::getName)
                 .sorted()
-                .collect(Collectors.toList());
+                .toList();
     }
 }
